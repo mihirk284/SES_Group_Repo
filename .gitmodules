@@ -1,0 +1,48 @@
+[submodule "ses_ws/src/catkin_simple"]
+	path = ses_ws/src/catkin_simple
+	url = git@github.com:catkin/catkin_simple.git
+[submodule "ses_ws/src/catkin_boost_python_buildtool"]
+	path = ses_ws/src/catkin_boost_python_buildtool
+	url = https://github.com/ethz-asl/catkin_boost_python_buildtool.git
+[submodule "ses_ws/src/eigen_catkin"]
+	path = ses_ws/src/eigen_catkin
+	url = git@github.com:ethz-asl/eigen_catkin.git
+[submodule "ses_ws/src/eigen_checks"]
+	path = ses_ws/src/eigen_checks
+	url = git@github.com:ethz-asl/eigen_checks.git
+[submodule "ses_ws/src/gflags_catkin"]
+	path = ses_ws/src/gflags_catkin
+	url = git@github.com:ethz-asl/gflags_catkin.git
+[submodule "ses_ws/src/glog_catkin"]
+	path = ses_ws/src/glog_catkin
+	url = git@github.com:ethz-asl/glog_catkin.git
+[submodule "ses_ws/src/mav_comm"]
+	path = ses_ws/src/mav_comm
+	url = https://github.com/ethz-asl/mav_comm.git
+[submodule "ses_ws/src/mavlink"]
+	path = ses_ws/src/mavlink
+	url = https://github.com/mavlink/mavlink-gbp-release.git
+[submodule "ses_ws/src/mavros"]
+	path = ses_ws/src/mavros
+	url = https://github.com/ethz-asl/mavros.git
+[submodule "ses_ws/src/minkindr"]
+	path = ses_ws/src/minkindr
+	url = git@github.com:ethz-asl/minkindr.git
+[submodule "ses_ws/src/minkindr_ros"]
+	path = ses_ws/src/minkindr_ros
+	url = git@github.com:ethz-asl/minkindr_ros.git
+[submodule "ses_ws/src/numpy_eigen"]
+	path = ses_ws/src/numpy_eigen
+	url = https://github.com/ethz-asl/numpy_eigen.git
+[submodule "ses_ws/src/protobuf_catkin"]
+	path = ses_ws/src/protobuf_catkin
+	url = git@github.com:ethz-asl/protobuf_catkin.git
+[submodule "ses_ws/src/rotors_simulator"]
+	path = ses_ws/src/rotors_simulator
+	url = https://github.com/ethz-asl/rotors_simulator.git
+[submodule "ses_ws/src/velodyne_simulator"]
+	path = ses_ws/src/velodyne_simulator
+	url = https://mihirk284@bitbucket.org/DataspeedInc/velodyne_simulator.git
+[submodule "ses_ws/src/voxblox"]
+	path = ses_ws/src/voxblox
+	url = git@github.com:ethz-asl/voxblox.git
