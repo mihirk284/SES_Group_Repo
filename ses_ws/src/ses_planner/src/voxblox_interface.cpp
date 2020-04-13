@@ -32,7 +32,7 @@ void VoxbloxInterface::checkLineStatus(const geometry_msgs::PoseStamped& msg )
   {
 	  std::cout << "\n\nLINE UNKNOWN"<<std::endl;
   }
-  else if (result == 1)
+  else if (result == 2)
   {
 	  std::cout << "\n\nLINE FREE"<<std::endl;
   }
@@ -54,11 +54,12 @@ void VoxbloxInterface::checkBoxStatus(const geometry_msgs::PoseStamped& msg )
   Eigen::Vector3d start(x1,y1,z1);
   Eigen::Vector3d box_size(bx,by,bz);
   int result = int(this->map_manager_->getBoxStatus(start, box_size, true));
+  std::cout << "RESULT IS " << result <<std::endl;
   if (result == 0)
   {
 	  std::cout << "\n\nBOX UNKNOWN"<<std::endl;
   }
-  else if (result == 1)
+  else if (result == 2)
   {
 	  std::cout << "\n\nBOX FREE"<<std::endl;
   }

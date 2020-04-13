@@ -26,6 +26,7 @@ VoxbloxMapManager::VoxelStatus VoxbloxMapManager::getBoxStatus(const Eigen::Vect
                                     const Eigen::Vector3d& size,
                                     bool stop_at_unknown_voxel) const
 {
+  std::cout << "GETTING BOX STATUS "<<std::endl;
   float voxel_size = sdf_layer_->voxel_size();
   float voxel_size_inv = 1 / voxel_size;
   voxblox::LongIndex center_voxel_index = voxblox::getGridIndexFromPoint<voxblox::LongIndex>(center.cast<voxblox::FloatingPoint>(), voxel_size_inv);
@@ -57,6 +58,7 @@ for(voxblox::LongIndexElement i = x_beg; i <= x_end; i++)
       voxblox::EsdfVoxel* voxel = sdf_layer_->getVoxelPtrByGlobalIndex(voxel_index);
       if (checkUnknownStatus(voxel))
       {
+        std::cout << "Voxel Unknown"<<std::endl;
         if (stop_at_unknown_voxel)
         {
           return VoxelStatus::kUnknown;
@@ -65,20 +67,24 @@ for(voxblox::LongIndexElement i = x_beg; i <= x_end; i++)
       }
       else if (voxel->distance <= distance_thres)
       {
+        std::cout << "Voxel Distance less than threshold, setting as occupied"<<std::endl;
         return VoxelStatus::kOccupied;
       }
 
     }
   }
 }
+std::cout << "BOX STATUS IS CURRENT STATUS, SEEMS FREE"<<std::endl;
 return current_status;
 }
 
 
 bool VoxbloxMapManager::checkUnknownStatus(const voxblox::EsdfVoxel* voxel) const {
   if (voxel == nullptr ||  !voxel->observed) {     //voxel->weight < 1e-6) {
+    std::cout << "Voxel Unobserved"<<std::endl;
     return true;
   }
+  std::cout << "Voxel Observed"<<std::endl;
   return false;
 }
 

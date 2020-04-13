@@ -5,6 +5,7 @@
 #include <voxblox/utils/planning_utils_inl.h>
 #include <voxblox_ros/transformer.h>
 #include <voxblox_ros/ros_params.h>
+#include <iostream>
 
 #include "geometry_msgs/PoseStamped.h"
 
