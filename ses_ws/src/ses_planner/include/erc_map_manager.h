@@ -37,6 +37,7 @@ class VoxbloxInterface
   public:
   ros::NodeHandle nh_;
   ros::NodeHandle nh_private_;
+  ros::Subscriber lineSub, mapdistSub, boxSub;
 	VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_private);
   VoxbloxMapManager* map_manager_;
 	void checkLineStatus(const geometry_msgs::PoseStamped& msg);

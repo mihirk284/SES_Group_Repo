@@ -20,10 +20,13 @@ cs_add_library(
   ${PROJECT_NAME}
   src/map_manager_voxblox_erc.cpp
   src/voxblox_interface.cpp
+  src/voxbloxinterface_ros_node.cpp
   )
 
 
-cs_add_executable(sesplanner_node src/voxblox_interface.cpp)
+cs_add_executable(sesplanner_node src/voxbloxinterface_ros_node.cpp src/map_manager_voxblox_erc.cpp src/voxblox_interface.cpp)
+
+
 target_link_libraries(sesplanner_node ${PROJECT_NAME})
 
 cs_install()

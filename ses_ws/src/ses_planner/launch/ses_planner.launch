@@ -1,5 +1,4 @@
 <launch>
-  <!-- All settings -->
 
   <!-- Config files -->
   <arg name="voxblox_config_file" default="$(find ses_planner)/config/voxblox_sim_config.yaml"/>

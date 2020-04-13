@@ -4,10 +4,11 @@
 
 VoxbloxInterface::VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_private): nh_(nh), nh_private_(nh_private)
 {
+  lineSub = nh_.subscribe("line_status", 1000, &VoxbloxInterface::checkLineStatus, this);
+  mapdistSub = nh_.subscribe("map_status", 1000, &VoxbloxInterface::checkMapDistance, this);
+  boxSub = nh_.subscribe("box_status", 1000, &VoxbloxInterface::checkBoxStatus, this);
   VoxbloxMapManager* map_manager_ = new VoxbloxMapManager(nh_, nh_private_);
-  ros::Subscriber lineSub = nh_.subscribe("LineStatus", 1000, &VoxbloxInterface::checkLineStatus, this);
-  ros::Subscriber mapdistSub = nh_.subscribe("MapDist", 1000, &VoxbloxInterface::checkMapDistance, this);
-  ros::Subscriber boxSub = nh_.subscribe("BoxStatus", 1000, &VoxbloxInterface::checkBoxStatus, this);
+  
   std::cout << "VOXBLOX INTERFACE INITIALISED, SUBSCRIBERS INITIALISED"<<std::endl;
 }
 
@@ -77,35 +78,4 @@ void VoxbloxInterface::checkMapDistance(const geometry_msgs::PoseStamped& msg )
   Eigen::Vector3d start(x1,y1,z1);
   double result = double(this->map_manager_->getMapDistance(start));
   std::cout << "\n\nDistance of map from point is :- "<<result <<std::endl;
-}
-
-
-int main(int argc, char **argv)
-{
-
-  ros::init(argc, argv, "map_tester");
-
-  /**
-   * NodeHandle is the main access point to communications with the ROS system.
-   * The first NodeHandle constructed will fully initialize this node, and the last
-   * NodeHandle destructed will close down the node.
-   */
-  geometry_msgs::PoseStamped p;
-  p.pose.position.x = 10;
-  p.pose.position.y = 10;
-  p.pose.position.z = 10;
-
-  ros::NodeHandle nh;
-  ros::NodeHandle nh_private("~");
-
-
-  VoxbloxInterface vbint(nh, nh_private);
-  std::cout << "VBINT intialised"<<std::endl;
-
-
-  ros::AsyncSpinner spinner(2);
-  spinner.start();
-  ros::waitForShutdown();
-//ros::spin();
-return 0;
 }
