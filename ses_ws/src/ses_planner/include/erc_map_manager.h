@@ -6,6 +6,8 @@
 #include <voxblox_ros/transformer.h>
 #include <voxblox_ros/ros_params.h>
 
+#include "geometry_msgs/PoseStamped.h"
+
 class VoxbloxMapManager {
  public:
   enum VoxelStatus{ kUnknown =0, kOccupied, kFree};
@@ -27,5 +29,18 @@ class VoxbloxMapManager {
   bool checkUnknownStatus(const voxblox::EsdfVoxel* voxel) const;
 
   // Map!
+  
+};
+
+class VoxbloxInterface
+{
+  public:
+  ros::NodeHandle nh_;
+  ros::NodeHandle nh_private_;
+	VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_private);
+  VoxbloxMapManager* map_manager_;
+	void checkLineStatus(const geometry_msgs::PoseStamped& msg);
+	void checkBoxStatus(const geometry_msgs::PoseStamped& msg);
+	void checkMapDistance(const geometry_msgs::PoseStamped& msg);
   
 };

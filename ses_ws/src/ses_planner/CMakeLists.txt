@@ -3,19 +3,27 @@ project(ses_planner)
 
 add_compile_options(-std=c++11)
 add_definitions(-std=c++11)
-find_package(catkin REQUIRED)
-find_package(catkin_simple REQUIRED)
-find_package(Eigen3 REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+   roscpp
+   rospy
+   geometry_msgs
+   std_msgs
+   message_generation
+   catkin_simple
+   Eigen3
+)
+
 catkin_simple(ALL_DEPS_REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 
 cs_add_library(
   ${PROJECT_NAME}
   src/map_manager_voxblox_erc.cpp
+  src/voxblox_interface.cpp
   )
 
 
-cs_add_executable(sesplanner_node src/sesplanner_ros_node.cpp)
+cs_add_executable(sesplanner_node src/voxblox_interface.cpp)
 target_link_libraries(sesplanner_node ${PROJECT_NAME})
 
 cs_install()

@@ -1,0 +1,15 @@
+<launch>
+  <!-- All settings -->
+
+  <!-- Config files -->
+  <arg name="voxblox_config_file" default="$(find ses_planner)/config/voxblox_sim_config.yaml"/>
+  <arg name="map_config_file" default="$(arg voxblox_config_file)"/>
+
+    <!-- Graph based planning -->
+    <node pkg="ses_planner" type="sesplanner_node" name="sesplanner_node" output="screen">
+      <remap from="pointcloud" to="/velodyne_points" />
+      <remap from="transform" to="/velodyne" />
+      <rosparam command="load" file="$(arg map_config_file)" />
+    </node>
+
+</launch>
