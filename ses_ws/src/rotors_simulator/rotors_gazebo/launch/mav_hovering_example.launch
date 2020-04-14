@@ -1,4 +1,5 @@
 <launch>
+  
   <arg name="mav_name" default="firefly"/>
   <arg name="world_name" default="basic"/>
   <arg name="enable_logging" default="false" />
@@ -7,6 +8,7 @@
   <arg name="debug" default="false"/>
   <arg name="gui" default="true"/>
   <arg name="paused" default="true"/>
+  <node pkg="tf" type="static_transform_publisher" name="base2velodyne" args="0 0 0.05 0.0 0.0 0.0 $(arg mav_name)/base_link $(arg mav_name)/$(arg mav_name)/velodyne 10" />
   <!-- The following line causes gzmsg and gzerr messages to be printed to the console
       (even when Gazebo is started through roslaunch) -->
   <arg name="verbose" default="false"/>
@@ -20,7 +22,7 @@
     <arg name="gui" value="$(arg gui)" />
     <arg name="verbose" value="$(arg verbose)"/>
   </include>
-
+  
   <group ns="$(arg mav_name)">
     <include file="$(find rotors_gazebo)/launch/spawn_mav.launch">
       <arg name="mav_name" value="$(arg mav_name)" />

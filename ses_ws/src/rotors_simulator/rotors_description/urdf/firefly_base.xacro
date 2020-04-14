@@ -50,6 +50,11 @@
       rotor_velocity_slowdown_sim="${rotor_velocity_slowdown_sim}" 
       wait_to_record_bag="$(arg wait_to_record_bag)" />
   </xacro:if>
-
+  <xacro:arg name="gpu" default="true"/>
+  <xacro:property name="gpu" value="$(arg gpu)" />
+  <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <VLP-16 parent="${namespace}/base_link" name="${namespace}/velodyne" topic="/velodyne_points" hz="60" samples="440" gpu="${gpu}">
+    <origin xyz="0 0 0.1" rpy="0 0 0" />
+  </VLP-16>
 </robot>
 
