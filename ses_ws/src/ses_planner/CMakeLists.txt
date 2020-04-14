@@ -10,8 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
    std_msgs
    message_generation
    catkin_simple
-   Eigen3
 )
+find_package(Eigen3 REQUIRED)
 
 catkin_simple(ALL_DEPS_REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
