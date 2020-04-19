@@ -50,6 +50,7 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <buildtool_depend>catkin_simple</buildtool_depend>
+  <exec_depend>message_runtime</exec_depend>
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>cv_bridge</depend>
@@ -57,11 +58,12 @@
   <depend>image_proc</depend>
   <depend>image_transport</depend>
   <depend>tf</depend>
-  <depend>message_generation</depend>
+  <build_depend>message_generation</build_depend>
   <depend>geometry_msgs</depend>
   <depend>std_msgs</depend>
   <depend>visualization_msgs</depend>
   <depend>voxblox_ros</depend>
+
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

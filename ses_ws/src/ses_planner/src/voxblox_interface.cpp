@@ -2,16 +2,38 @@
 #include <erc_map_manager.h>
 
 
+
 VoxbloxInterface::VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_private): nh_(nh), nh_private_(nh_private)
 {
   lineSub = nh_.subscribe("line_status", 1000, &VoxbloxInterface::checkLineStatus, this);
   mapdistSub = nh_.subscribe("map_status", 1000, &VoxbloxInterface::checkMapDistance, this);
   boxSub = nh_.subscribe("box_status", 1000, &VoxbloxInterface::checkBoxStatus, this);
   VoxbloxMapManager* map_manager_ = new VoxbloxMapManager(nh_, nh_private_);
-  
+  service = nh_.advertiseService("check boxes", &VoxbloxInterface::checkBoxesService, this);
   std::cout << "VOXBLOX INTERFACE INITIALISED, SUBSCRIBERS INITIALISED"<<std::endl;
 }
 
+
+
+bool VoxbloxInterface::checkBoxesService(ses_planner::checkBoxes::Request& req, ses_planner::checkBoxes::Response& res)
+{
+  Eigen::Vector3d box_size(req.size.x, req.size.y, req.size.z);
+  res.status.data.clear();
+  int box_status = 0;
+  for (auto iter = req.poselist.poses.begin(); iter != req.poselist.poses.end(); iter++)
+  {
+    Eigen::Vector3d box_center(iter->position.x, iter->position.y, iter->position.z);
+    if (int(this->map_manager_->getBoxStatus(box_center, box_size, true)) == 2)
+    {
+      res.status.data.push_back(1);
+    }
+    else
+    {
+      res.status.data.push_back(0);
+    }    
+  }
+  return true;
+}
 
 
 void VoxbloxInterface::checkLineStatus(const geometry_msgs::PoseStamped& msg )

@@ -8,10 +8,31 @@ find_package(catkin REQUIRED COMPONENTS
    rospy
    geometry_msgs
    std_msgs
-   message_generation
    catkin_simple
+   message_generation 
 )
 find_package(Eigen3 REQUIRED)
+
+
+add_service_files(
+FILES
+checkBoxes.srv
+)
+
+# add_message_files(
+#   FILES
+#   geometry_msgs
+#   std_msgs
+# )
+
+# generate_messages(
+# DEPENDENCIES
+# std_msgs
+# geometry_msgs
+# )
+
+
+
 
 catkin_simple(ALL_DEPS_REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
