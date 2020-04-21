@@ -73,7 +73,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		occ=chk(pa)
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
-	for i,j in pa,occ:
+	for i,j in pa.poses,occ:
 		if j==0:
 			G.remove_node((i.position.x,i.position.y,i.position.z))
 	tgt=[]
@@ -99,16 +99,18 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		waypts.append(p1)
 	return G,waypts
 
-#def main():
-#	p=Point()
-#	p.x=1
-#	p.y=1
-#	p.z=1
-#	target=((3,4,4),1)
-#	radius=0.5
-#	G,waypts=run_RRG(((0,0,0),(10,10,10)),p,target,0.1,1000,radius)
-#	print(waypts)
-#	nx.draw(G)
-#	plt.show()
-#if __name__ == '__main__':
-#    main()
+def main():
+	rospy.init_node('rrg',anonymous=True)
+	p=Point()
+	p.x=1
+	p.y=1
+	p.z=1
+	target=((3,4,4),1)
+	radius=0.5
+	G=None
+	G,waypts=run_RRG(G,((0,0,0),(10,10,10)),p,target,0.1,1000,radius)
+	print(waypts)
+	nx.draw(G)
+	plt.show()
+if __name__ == '__main__':
+    main()
