@@ -100,6 +100,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 	return G,waypts
 
 def main():
+	rospy.init_node('rrg',anonymous=True)
 	p=Point()
 	p.x=1
 	p.y=1
