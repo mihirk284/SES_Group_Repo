@@ -9,7 +9,8 @@ VoxbloxInterface::VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_priv
   mapdistSub = nh_.subscribe("map_status", 1000, &VoxbloxInterface::checkMapDistance, this);
   boxSub = nh_.subscribe("box_status", 1000, &VoxbloxInterface::checkBoxStatus, this);
   VoxbloxMapManager* map_manager_ = new VoxbloxMapManager(nh_, nh_private_);
-  service = nh_.advertiseService("check_boxes", &VoxbloxInterface::checkBoxesService, this);
+  check_boxes_service = nh_.advertiseService("check_boxes", &VoxbloxInterface::checkBoxesService, this);
+  check_lines_service = nh_.advertiseService("check_lines", &VoxbloxInterface::checkLinesService, this);
   std::cout << "VOXBLOX INTERFACE INITIALISED, SUBSCRIBERS INITIALISED"<<std::endl;
 }
 
@@ -24,6 +25,28 @@ bool VoxbloxInterface::checkBoxesService(ses_planner::checkBoxes::Request& req, 
   {
     Eigen::Vector3d box_center(iter->position.x, iter->position.y, iter->position.z);
     if (int(this->map_manager_->getBoxStatus(box_center, box_size, true)) == 2)
+    {
+      res.status.data.push_back(1);
+    }
+    else
+    {
+      res.status.data.push_back(0);
+    }    
+  }
+  return true;
+}
+
+
+bool VoxbloxInterface::checkLinesService(ses_planner::checkLines::Request& req, ses_planner::checkLines::Response& res)
+{
+  Eigen::Vector3d box_size(req.size.x, req.size.y, req.size.z);
+  res.status.data.clear();
+  int box_status = 0;
+  for (int iter = 0; iter < req.start_poselist.poses.size(); iter++)
+  {
+    Eigen::Vector3d start_box_center(req.start_poselist.poses[iter].position.x, req.start_poselist.poses[iter].position.y, req.start_poselist.poses[iter].position.z);
+    Eigen::Vector3d end_box_center(req.end_poselist.poses[iter].position.x, req.end_poselist.poses[iter].position.y, req.end_poselist.poses[iter].position.z);
+    if (int(this->map_manager_->getPathStatus(start_box_center, end_box_center, box_size, true)) == 2)
     {
       res.status.data.push_back(1);
     }

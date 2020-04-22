@@ -1,0 +1,5 @@
+geometry_msgs/Point size
+geometry_msgs/PoseArray start_poselist
+geometry_msgs/PoseArray end_poselist
+---
+std_msgs/Int16MultiArray status

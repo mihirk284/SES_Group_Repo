@@ -9,6 +9,7 @@
 
 #include "geometry_msgs/PoseStamped.h"
 #include "ses_planner/checkBoxes.h"
+#include "ses_planner/checkLines.h"
 
 class VoxbloxMapManager {
  public:
@@ -46,5 +47,6 @@ class VoxbloxInterface
 	void checkBoxStatus(const geometry_msgs::PoseStamped& msg);
 	void checkMapDistance(const geometry_msgs::PoseStamped& msg);
   bool checkBoxesService(ses_planner::checkBoxes::Request& req, ses_planner::checkBoxes::Response& res);
-  ros::ServiceServer service;
+  bool checkLinesService(ses_planner::checkLines::Request& req, ses_planner::checkLines::Response& res);
+  ros::ServiceServer check_boxes_service, check_lines_service;
 };
