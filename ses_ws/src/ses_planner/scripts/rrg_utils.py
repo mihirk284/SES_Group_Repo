@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python
 import numpy as np
 import networkx as nx
 import random
@@ -71,7 +71,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 	try:
 		chk = rospy.ServiceProxy('check boxes', checkBoxesService)	
 		occ=chk(pa)
-	except rospy.ServiceException, e:
+	except rospy.ServiceException as e:
 		print "Service call failed: %s"%e
 	for i,j in pa.poses,occ.data:
 		if j==0:
@@ -109,7 +109,7 @@ def main():
 	radius=0.5
 	G=None
 	G,waypts=run_RRG(G,((0,0,0),(10,10,10)),p,target,0.1,1000,radius)
-	print(waypts)
+	print waypts
 	nx.draw(G)
 	plt.show()
 if __name__ == '__main__':
