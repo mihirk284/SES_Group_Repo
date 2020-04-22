@@ -61,6 +61,9 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 	box_size.x,box_size.y,box_size.z = 0.5,0.5,0.5
 	pa=PoseArray()
 	occ=None
+	pae1=PoseArray()
+	pae2=PoseArray()
+	oce=None
 	s=(source_pt.x,source_pt.y,source_pt.z)
 	for i in range(n_pts):
 		pt=spawn_new_node(G,space,radius,granularity)
@@ -84,6 +87,35 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 	for i in range(len(pa.poses)):
 		if occ.status.data[i] == 0:
 			G.remove_node((pa.poses[i].position.x,pa.poses[i].position.y,pa.poses[i].position.z))
+	l=list(G.edges)
+	for i in l:
+		p=Pose()
+		p.position=Point()
+		p.position.x=i[0][0]
+		p.position.y=i[0][1]
+		p.position.z=i[0][2]
+		p.orientation=Quaternion()
+		p.orientation.x=0
+		p.orientation.y=0
+		p.orientation.z=0
+		p.orientation.w=0
+		pae1.poses.append(p)
+		p.position.x=i[1][0]
+		p.position.y=i[1][1]
+		p.position.z=i[1][2]
+		pae2.poses.append(p)
+	rospy.wait_for_service('/check_lines')
+	try:
+		chk2 = rospy.ServiceProxy('/check_lines', checkLines)	
+		oce=chk2(box_size,pae1,pae2)
+	except rospy.ServiceException as e:
+		print "Service call failed: %s"%e
+	print(type(pae1.poses))
+	oce.status.data = list(oce.status.data)
+	print(oce.status.data)
+	for i in range(len(oce.status.data)):
+		if oce.status.data[i] == 0:
+			G.remove_edge((pae1.poses[i].position.x,pae1.poses[i].position.y,pae1.poses[i].position.z),(pae2.poses[i].position.x,pae2.poses[i].position.y,pae2.poses[i].position.z))
 	tgt=[]
 	dp=[]
 	dpl=[]
@@ -110,14 +142,30 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 def main():
 	rospy.init_node('rrg',anonymous=True)
 	print("IN MAIN")
+	print("Enter space boundaries")
+	lx=float(raw_input("Enter lower x: "))
+	ly=float(raw_input("Enter lower y: "))
+	lz=float(raw_input("Enter lower z: "))
+	ux=float(raw_input("Enter upper x: "))
+	uy=float(raw_input("Enter upper y: "))
+	uz=float(raw_input("Enter upper z: "))
+	lo=(lx,ly,lz)
+	hi=(ux,uy,uz)
 	p=Point()
-	p.x=1
-	p.y=1
-	p.z=1
-	target=((3,4,4),1)
-	radius=0.5
+	print("Enter starting point coordinates")
+	p.x=float(raw_input("Enter x: "))
+	p.y=float(raw_input("Enter y: "))
+	p.z=float(raw_input("Enter z: "))
+	print("Enter target centre coordinates")
+	tx=float(raw_input("Enter x: "))
+	ty=float(raw_input("Enter y: "))
+	tz=float(raw_input("Enter z: "))
+	tr=float(raw_input("Enter target radius: "))
+	target=((tx,ty,tz),tr)
+	n=int(raw_input("Enter number of nodes: "))
+	exploration_radius=0.5
 	G=None
-	G,waypts=run_RRG(G,((0,0,0),(10,10,10)),p,target,0.1,1000,radius)
+	G,waypts=run_RRG(G,(lo,hi),p,target,0.1,n,exploration_radius)
 	print waypts
 	nx.draw(G)
 	plt.show()
