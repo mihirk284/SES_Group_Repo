@@ -2,15 +2,6 @@
 #include <erc_map_manager.h>
 #include <std_msgs/String.h>
 
-void chatterCallback(const std_msgs::String::ConstPtr& msg)
-{
-  ROS_INFO("I heard: [%s]", msg->data.c_str());
-}
-
-void psCallback(const geometry_msgs::PoseStamped& msg)
-{
-  std::cout << msg.pose.position.x <<std::endl;
-}
 
 
 int main(int argc, char **argv)
@@ -30,9 +21,6 @@ int main(int argc, char **argv)
 
 
   VoxbloxInterface vbint(nh, nh_private);
-  ros::Subscriber randomSub = nh.subscribe("testsub", 1000, chatterCallback);
-  ros::Subscriber psSub = nh.subscribe("pssub", 1000, psCallback);
-  std::cout << "VBINT intialised"<<std::endl;
 
 
 //   ros::AsyncSpinner spinner(2);

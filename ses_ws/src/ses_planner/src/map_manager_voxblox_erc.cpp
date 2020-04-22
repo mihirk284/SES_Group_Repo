@@ -74,7 +74,7 @@ for(voxblox::LongIndexElement i = x_beg; i <= x_end; i++)
     }
   }
 }
-std::cout << "BOX STATUS IS CURRENT STATUS, SEEMS FREE"<<std::endl;
+//std::cout << "BOX STATUS IS CURRENT STATUS, SEEMS FREE"<<std::endl;
 return current_status;
 }
 

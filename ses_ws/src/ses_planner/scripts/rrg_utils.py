@@ -7,6 +7,9 @@ import std_msgs.msg
 import math
 from geometry_msgs.msg import Point, Pose, PoseArray, Quaternion
 import matplotlib.pyplot as plt
+from ses_planner.srv import *
+
+print("HELLO! INITIALIZING")
 
 def init_graph(p):
 	G=nx.Graph()
@@ -51,10 +54,12 @@ def spawn_new_node(G,space,radius,granularity):
 #n_pts: number of nodes generated. default 10000
 #radius: radius of sphere within which new points are spawned. default: 0.5
 def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.5):
+	print("RUNNING RRG")
 	if G==None:
 		G=init_graph(source_pt)
+	box_size = Point()
+	box_size.x,box_size.y,box_size.z = 0.5,0.5,0.5
 	pa=PoseArray()
-	pa.poses=[]
 	occ=None
 	s=(source_pt.x,source_pt.y,source_pt.z)
 	for i in range(n_pts):
@@ -67,15 +72,18 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		p.orientation.z=0
 		p.orientation.w=0
 		pa.poses.append(p)
-	rospy.wait_for_service('check boxes')
+	rospy.wait_for_service('/check_boxes')
 	try:
-		chk = rospy.ServiceProxy('check boxes', checkBoxesService)	
-		occ=chk(pa)
+		chk = rospy.ServiceProxy('/check_boxes', checkBoxes)	
+		occ=chk(box_size,pa)
 	except rospy.ServiceException as e:
 		print "Service call failed: %s"%e
-	for i,j in pa.poses,occ.data:
-		if j==0:
-			G.remove_node((i.position.x,i.position.y,i.position.z))
+	print(type(pa.poses))
+	occ.status.data = list(occ.status.data)
+	print(occ.status.data)
+	for i in range(len(pa.poses)):
+		if occ.status.data[i] == 0:
+			G.remove_node((pa.poses[i].position.x,pa.poses[i].position.y,pa.poses[i].position.z))
 	tgt=[]
 	dp=[]
 	dpl=[]
@@ -101,6 +109,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 
 def main():
 	rospy.init_node('rrg',anonymous=True)
+	print("IN MAIN")
 	p=Point()
 	p.x=1
 	p.y=1

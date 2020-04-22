@@ -9,7 +9,7 @@ VoxbloxInterface::VoxbloxInterface(ros::NodeHandle &nh, ros::NodeHandle &nh_priv
   mapdistSub = nh_.subscribe("map_status", 1000, &VoxbloxInterface::checkMapDistance, this);
   boxSub = nh_.subscribe("box_status", 1000, &VoxbloxInterface::checkBoxStatus, this);
   VoxbloxMapManager* map_manager_ = new VoxbloxMapManager(nh_, nh_private_);
-  service = nh_.advertiseService("check boxes", &VoxbloxInterface::checkBoxesService, this);
+  service = nh_.advertiseService("check_boxes", &VoxbloxInterface::checkBoxesService, this);
   std::cout << "VOXBLOX INTERFACE INITIALISED, SUBSCRIBERS INITIALISED"<<std::endl;
 }
 
