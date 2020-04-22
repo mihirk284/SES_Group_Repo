@@ -55,7 +55,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		G=init_graph(source_pt)
 	pa=PoseArray()
 	pa.poses=[]
-	occ=[]
+	occ=None
 	s=(source_pt.x,source_pt.y,source_pt.z)
 	for i in range(n_pts):
 		pt=spawn_new_node(G,space,radius,granularity)
@@ -73,7 +73,7 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		occ=chk(pa)
 	except rospy.ServiceException, e:
 		print "Service call failed: %s"%e
-	for i,j in pa.poses,occ:
+	for i,j in pa.poses,occ.data:
 		if j==0:
 			G.remove_node((i.position.x,i.position.y,i.position.z))
 	tgt=[]
@@ -100,7 +100,6 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 	return G,waypts
 
 def main():
-	rospy.init_node('rrg',anonymous=True)
 	p=Point()
 	p.x=1
 	p.y=1
