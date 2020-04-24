@@ -53,7 +53,7 @@ def spawn_new_node(G,space,radius,granularity):
 #granularity: float, minimum interval between pts. default 0.1
 #n_pts: number of nodes generated. default 10000
 #radius: radius of sphere within which new points are spawned. default: 0.5
-def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.5):
+def run_RRG(G, space, source_pt, target, granularity=0.25, n_pts=10000, radius=0.5):
 	print("RUNNING RRG")
 	if G==None:
 		G=init_graph(source_pt)
