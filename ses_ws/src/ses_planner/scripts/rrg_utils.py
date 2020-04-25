@@ -7,19 +7,16 @@ import std_msgs.msg
 import math
 from geometry_msgs.msg import Point, Pose, PoseArray, Quaternion
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from ses_planner.srv import *
 
 print("HELLO! INITIALIZING")
 
-def init_graph(p):
+def init_graph(p,q):
 	G=nx.Graph()
 	G.add_node((p.x,p.y,p.z))
+	G.add_node((q.x,q.y,q.z))
 	return G
-
-def choose_random_node(G):
-	l=list(G.nodes)
-	n=random.randint(0,len(l)-1)
-	return l[n]
 
 def cartesian_distance(p1,p2):
 	dx=p1[0]-p2[0]
@@ -28,19 +25,20 @@ def cartesian_distance(p1,p2):
 	return math.sqrt(dx**2+dy**2+dz**2)
 
 def spawn_new_node(G,space,radius,granularity):
-	n=choose_random_node(G)
-	l=[i for i in np.arange(0,radius,granularity)]
-	p=Point()
-	dx=l[random.randint(0,len(l)-1)]
-	dy=l[random.randint(0,len(l)-1)]
-	dz=l[random.randint(0,len(l)-1)]
-	p.x=min(n[0]+dx,space[1][0])
-	p.y=min(n[1]+dy,space[1][1])
-	p.z=min(n[2]+dz,space[1][2])
 	nds=[]
-	for i in list(G.nodes):
-		if cartesian_distance((p.x,p.y,p.z),i)<=radius:
-			nds.append(i)
+	p=Point()
+	while nds==[]:
+		dx=random.sample([i for i in np.arange(min(space[0][0],space[1][0]),max(space[0][0],space[1][0]),granularity)],1)[0]
+		dy=random.sample([i for i in np.arange(min(space[0][1],space[1][1]),max(space[0][1],space[1][1]),granularity)],1)[0]
+		dz=random.sample([i for i in np.arange(min(space[0][2],space[1][2]),max(space[0][2],space[1][2]),granularity)],1)[0]
+		p.x=dx
+		p.y=dy
+		p.z=dz
+		nds=[]
+		for i in list(G.nodes):
+			if cartesian_distance((p.x,p.y,p.z),i)<=3:
+				nds.append(i)
+	G.add_node((p.x,p.y,p.z))
 	for i in nds:
 		G.add_edge((p.x,p.y,p.z),i,weight=cartesian_distance((p.x,p.y,p.z),i))
 	return p
@@ -53,10 +51,16 @@ def spawn_new_node(G,space,radius,granularity):
 #granularity: float, minimum interval between pts. default 0.1
 #n_pts: number of nodes generated. default 10000
 #radius: radius of sphere within which new points are spawned. default: 0.5
-def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.5):
+def run_RRG(G, space, source_pt, target, granularity=0.2, n_pts=10000, radius=0.5):
 	print("RUNNING RRG")
+	q=Point()
+	q.x=target[0][0]
+	q.y=target[0][1]
+	q.z=target[0][2]
 	if G==None:
-		G=init_graph(source_pt)
+		G=init_graph(source_pt,q)
+	else:
+		G.add_node(target[0])
 	box_size = Point()
 	box_size.x,box_size.y,box_size.z = 0.5,0.5,0.5
 	pa=PoseArray()
@@ -81,12 +85,13 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		occ=chk(box_size,pa)
 	except rospy.ServiceException as e:
 		print "Service call failed: %s"%e
-	print(type(pa.poses))
 	occ.status.data = list(occ.status.data)
-	print(occ.status.data)
 	for i in range(len(pa.poses)):
 		if occ.status.data[i] == 0:
-			G.remove_node((pa.poses[i].position.x,pa.poses[i].position.y,pa.poses[i].position.z))
+			try:
+				G.remove_node((pa.poses[i].position.x,pa.poses[i].position.y,pa.poses[i].position.z))
+			except nx.exception.NetworkXError as e:
+				pass
 	l=list(G.edges)
 	for i in l:
 		p=Pose()
@@ -110,12 +115,14 @@ def run_RRG(G, space, source_pt, target, granularity=0.1, n_pts=10000, radius=0.
 		oce=chk2(box_size,pae1,pae2)
 	except rospy.ServiceException as e:
 		print "Service call failed: %s"%e
-	print(type(pae1.poses))
 	oce.status.data = list(oce.status.data)
-	print(oce.status.data)
 	for i in range(len(oce.status.data)):
 		if oce.status.data[i] == 0:
-			G.remove_edge((pae1.poses[i].position.x,pae1.poses[i].position.y,pae1.poses[i].position.z),(pae2.poses[i].position.x,pae2.poses[i].position.y,pae2.poses[i].position.z))
+			try:
+				G.remove_edge((pae1.poses[i].position.x,pae1.poses[i].position.y,pae1.poses[i].position.z),(pae2.poses[i].position.x,pae2.poses[i].position.y,pae2.poses[i].position.z))
+			except nx.exception.NetworkXError as e:
+				pass	
+
 	tgt=[]
 	dp=[]
 	dpl=[]
@@ -167,7 +174,16 @@ def main():
 	G=None
 	G,waypts=run_RRG(G,(lo,hi),p,target,0.1,n,exploration_radius)
 	print waypts
-	nx.draw(G)
+	x=[]
+	y=[]
+	z=[]
+	for i in waypts:
+		x.append(i.x)
+		y.append(i.y)
+		z.append(i.z)
+	fig=plt.figure()
+	ax=fig.gca(projection='3d')
+	ax.plot(x,y,z)
 	plt.show()
 if __name__ == '__main__':
     main()
