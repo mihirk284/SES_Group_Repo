@@ -7,6 +7,7 @@ import std_msgs.msg
 import math
 from geometry_msgs.msg import Point, Pose, PoseArray, Quaternion
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from ses_planner.srv import *
 
 print("HELLO! INITIALIZING")
@@ -173,7 +174,16 @@ def main():
 	G=None
 	G,waypts=run_RRG(G,(lo,hi),p,target,0.1,n,exploration_radius)
 	print waypts
-	nx.draw(G)
+	x=[]
+	y=[]
+	z=[]
+	for i in waypts:
+		x.append(i.x)
+		y.append(i.y)
+		z.append(i.z)
+	fig=plt.figure()
+	ax=fig.gca(projection='3d')
+	ax.plot(x,y,z)
 	plt.show()
 if __name__ == '__main__':
     main()
