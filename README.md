@@ -57,7 +57,7 @@ catkin build
    roslaunch darknet_ros yolo_v3.launch 
    ```
    Try placing some objects like the aeroplane, table, turtlebot in the Gazebo environment in front of the camera and you'll se YOLO        detecting it with a bounding box around that object.
----  
+***
 ## Contributors:
 1) [Mihir Kulkarni](https://github.com/mihirk284)
 2) [SriSreyas Sundaresan](https://github.com/SriSreyas) 
